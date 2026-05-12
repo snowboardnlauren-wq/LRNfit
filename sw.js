@@ -1,4 +1,4 @@
-const CACHE_NAME = "lrn-fit-v3";
+const CACHE_NAME = "lrn-fit-v5";
 const APP_FILES = [
   "./",
   "./index.html",

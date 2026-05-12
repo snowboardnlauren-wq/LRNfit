@@ -245,6 +245,29 @@ function formatDisplayDate(dateKey) {
   return dateText;
 }
 
+function getWeekStart(date) {
+  const weekStart = new Date(date);
+  weekStart.setHours(0, 0, 0, 0);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  return weekStart;
+}
+
+function formatWeekRange(weekStart) {
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+
+  const startText = weekStart.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  const endText = weekEnd.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+  return `${startText} - ${endText}`;
+}
+
 function getFoodsForDate(dateKey) {
   return state.foods.filter((food) => food.date === dateKey);
 }
@@ -408,32 +431,21 @@ function renderExerciseList() {
 }
 
 function renderCalendar() {
-  const year = visibleHistoryDate.getFullYear();
-  const month = visibleHistoryDate.getMonth();
-  const monthName = visibleHistoryDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
+  const weekStart = getWeekStart(visibleHistoryDate);
   const todayKey = getTodayKey();
 
-  historyMonthEl.textContent = monthName;
+  historyMonthEl.textContent = formatWeekRange(weekStart);
   calendarGridEl.innerHTML = "";
 
-  for (let index = 0; index < firstDay.getDay(); index += 1) {
-    const emptyDay = document.createElement("div");
-    emptyDay.className = "calendar-day empty";
-    calendarGridEl.append(emptyDay);
-  }
-
-  for (let day = 1; day <= lastDay.getDate(); day += 1) {
-    const date = new Date(year, month, day);
+  for (let dayOffset = 0; dayOffset < 7; dayOffset += 1) {
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + dayOffset);
     const dateKey = getDateKey(date);
     const foods = getFoodsForDate(dateKey);
     const exercises = getExercisesForDate(dateKey);
     const eaten = getTotalCalories(foods);
     const burned = getExerciseCalories(exercises);
+    const macros = getMacroTotals(foods);
     const net = Math.max(eaten - burned, 0);
 
     const dayCard = document.createElement("div");
@@ -447,7 +459,7 @@ function renderCalendar() {
 
     const dateLabel = document.createElement("span");
     dateLabel.className = "calendar-date";
-    dateLabel.textContent = String(day);
+    dateLabel.textContent = String(date.getDate());
 
     const netLabel = document.createElement("span");
     netLabel.className = "calendar-metric net";
@@ -459,9 +471,13 @@ function renderCalendar() {
 
     const burnedLabel = document.createElement("span");
     burnedLabel.className = "calendar-metric";
-    burnedLabel.textContent = `${formatCalories(burned)} burned`;
+    burnedLabel.textContent = `${formatCalories(burned)} workout`;
 
-    dayCard.append(dateLabel, netLabel, eatenLabel, burnedLabel);
+    const macrosLabel = document.createElement("span");
+    macrosLabel.className = "calendar-metric calendar-macros";
+    macrosLabel.textContent = `P ${formatCalories(macros.protein)}g / C ${formatCalories(macros.carbs)}g / F ${formatCalories(macros.fat)}g`;
+
+    dayCard.append(dateLabel, netLabel, eatenLabel, macrosLabel, burnedLabel);
     dayCard.addEventListener("click", () => selectDate(dateKey));
     dayCard.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
@@ -1144,12 +1160,12 @@ logGeneratedWorkoutButton.addEventListener("click", () => {
 });
 
 previousMonthButton.addEventListener("click", () => {
-  visibleHistoryDate = new Date(visibleHistoryDate.getFullYear(), visibleHistoryDate.getMonth() - 1, 1);
+  visibleHistoryDate.setDate(visibleHistoryDate.getDate() - 7);
   renderCalendar();
 });
 
 nextMonthButton.addEventListener("click", () => {
-  visibleHistoryDate = new Date(visibleHistoryDate.getFullYear(), visibleHistoryDate.getMonth() + 1, 1);
+  visibleHistoryDate.setDate(visibleHistoryDate.getDate() + 7);
   renderCalendar();
 });
 

@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=20260511-day-history" />
+    <link rel="stylesheet" href="styles.css?v=20260511-week-macros" />
   </head>
   <body>
     <main class="app-shell">
@@ -283,9 +283,9 @@
           <div class="section-title-row">
             <h2 id="history-heading">History</h2>
             <div class="month-controls">
-              <button id="previous-month" type="button" class="ghost-button">Prev</button>
-              <strong id="history-month">Month</strong>
-              <button id="next-month" type="button" class="ghost-button">Next</button>
+              <button id="previous-month" type="button" class="ghost-button">Prev week</button>
+              <strong id="history-month">Week</strong>
+              <button id="next-month" type="button" class="ghost-button">Next week</button>
             </div>
           </div>
 
@@ -298,12 +298,12 @@
             <span>Fri</span>
             <span>Sat</span>
           </div>
-          <div id="calendar-grid" class="calendar-grid" aria-label="Monthly calorie history"></div>
+          <div id="calendar-grid" class="calendar-grid" aria-label="Weekly calorie history"></div>
         </section>
       </div>
     </main>
 
-    <script src="app.js?v=20260511-day-history"></script>
+    <script src="app.js?v=20260511-week-macros"></script>
     <script>
       if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
         navigator.serviceWorker.register("sw.js");
