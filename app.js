@@ -36,6 +36,9 @@ const calendarGridEl = document.querySelector("#calendar-grid");
 const historyMonthEl = document.querySelector("#history-month");
 const previousMonthButton = document.querySelector("#previous-month");
 const nextMonthButton = document.querySelector("#next-month");
+const previousDayButton = document.querySelector("#previous-day");
+const nextDayButton = document.querySelector("#next-day");
+const selectedDayLabelEl = document.querySelector("#selected-day-label");
 const dayDetailEl = document.querySelector("#day-detail");
 const editDayFoodButton = document.querySelector("#edit-day-food");
 const editDayWorkoutButton = document.querySelector("#edit-day-workout");
@@ -67,6 +70,16 @@ if (viewTabsEl) {
     switchView(button.dataset.view);
   });
 }
+
+viewButtons.forEach((button) => {
+  const openView = (event) => {
+    event.preventDefault();
+    switchView(button.dataset.view);
+  };
+
+  button.addEventListener("click", openView);
+  button.addEventListener("touchend", openView);
+});
 
 let state = loadState();
 let selectedDateKey = getTodayKey();
@@ -467,6 +480,7 @@ function renderDayDetail() {
   detailTitle.className = "detail-date";
   detailTitle.textContent = formatDisplayDate(selectedDateKey);
 
+  selectedDayLabelEl.textContent = formatDisplayDate(selectedDateKey);
   dayDetailEl.innerHTML = "";
   dayDetailEl.append(detailTitle);
 
@@ -1138,6 +1152,15 @@ nextMonthButton.addEventListener("click", () => {
   visibleHistoryDate = new Date(visibleHistoryDate.getFullYear(), visibleHistoryDate.getMonth() + 1, 1);
   renderCalendar();
 });
+
+function moveSelectedDay(dayOffset) {
+  const nextDate = getSelectedDate();
+  nextDate.setDate(nextDate.getDate() + dayOffset);
+  selectDate(getDateKey(nextDate));
+}
+
+previousDayButton.addEventListener("click", () => moveSelectedDay(-1));
+nextDayButton.addEventListener("click", () => moveSelectedDay(1));
 
 function switchView(selectedView) {
   if (!selectedView) {

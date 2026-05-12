@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icon.svg" />
-    <link rel="stylesheet" href="styles.css?v=20260511-measures" />
+    <link rel="stylesheet" href="styles.css?v=20260511-day-history" />
   </head>
   <body>
     <main class="app-shell">
@@ -271,6 +271,11 @@
               <button id="edit-day-workout" type="button" class="ghost-button">Edit workout</button>
             </div>
           </div>
+          <div class="day-controls" aria-label="Selected day">
+            <button id="previous-day" type="button" class="ghost-button" aria-label="Previous day">&lt;</button>
+            <strong id="selected-day-label">Today</strong>
+            <button id="next-day" type="button" class="ghost-button" aria-label="Next day">&gt;</button>
+          </div>
           <div id="day-detail" class="day-detail"></div>
         </section>
 
@@ -298,7 +303,7 @@
       </div>
     </main>
 
-    <script src="app.js?v=20260511-measures"></script>
+    <script src="app.js?v=20260511-day-history"></script>
     <script>
       if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
         navigator.serviceWorker.register("sw.js");
